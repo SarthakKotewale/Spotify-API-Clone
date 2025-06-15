@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const userRouter = require("./routes/userRoutes");
 
 dotenv.config();
 
@@ -15,6 +16,9 @@ mongoose
     console.log("Error connecting to DB: ", err);
   });
 
+app.use(express.json());
+app.use("/api/users", userRouter);
+
 app.listen(process.env.PORT || 5000, () => {
-    console.log("Server started on port", process.env.PORT)
-})
+  console.log("Server started on port", process.env.PORT);
+});

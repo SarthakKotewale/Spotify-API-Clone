@@ -19,6 +19,7 @@
     }
   ],
   "paths": {
+
     "/api/users/register": {
       "post": {
         "summary": "Register a new user",
@@ -105,6 +106,84 @@
                   "example": {
                     "message": "Something went wrong, please try again."
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/users/login": {
+      "post": {
+        "summary": "Authenticate a user",
+        "description": "Logs in a user with their email and password, returning a JWT.",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The user's email address."
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "The user's password."
+                  }
+                },
+                "example": {
+                  "email": "john.doe@example.com",
+                  "password": "strongPassword123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "email": { "type": "string" },
+                    "isAdmin": { "type": "boolean" },
+                    "profilePicture": { "type": "string" },
+                    "token": {
+                      "type": "string",
+                      "description": "JWT for authorization"
+                    }
+                  },
+                  "example": {
+                    "_id": "638e2f8f5e1b1b1b1b1b1b1b",
+                    "name": "John Doe",
+                    "email": "john.doe@example.com",
+                    "isAdmin": false,
+                    "profilePicture": "path/to/pic.jpg",
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYz..."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid email or password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "message": { "type": "string" } },
+                  "example": { "message": "Invaliddd email or password" }
                 }
               }
             }

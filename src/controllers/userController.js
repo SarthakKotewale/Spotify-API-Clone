@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const User = require("../models/User");
+const generateToken = require("../utils/generateToken");
 
 const register = async (req, res) => {
   try {
@@ -33,4 +34,23 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { register };
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const userExist = await User.findOne({ email });
+    if (userExist && (await userExist.matchPassword(password))) {
+      return res.status(StatusCodes.OK).json({
+        _id: userExist._id,
+        email: userExist.email,
+        isAdmin: userExist.isAdmin,
+        profilePicture: userExist.profilePicture,
+        token: generateToken(userExist._id),
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(StatusCodes.UNAUTHORIZED).json({error: "Invalid email or password"})
+  }
+};
+
+module.exports = { register, login };

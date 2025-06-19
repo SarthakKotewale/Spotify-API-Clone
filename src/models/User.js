@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt")
 
 const userSchema = new mongoose.Schema(
   {
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema(
         "https://cdn.pixabay.com/photo/2025/02/17/19/50/mysterious-9413772_640.jpg",
     },
     isAdmin: {
-      type: String,
+      type: Boolean,
       default: false,
     },
     likedSongs: [
@@ -54,5 +55,14 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema)
-module.exports = User
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+const User = mongoose.model("User", userSchema);
+module.exports = User;

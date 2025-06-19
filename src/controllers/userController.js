@@ -11,7 +11,9 @@ const register = async (req, res) => {
     }
     const userExists = await User.findOne({ email });
     if (userExists) {
-      res.status(StatusCodes.BAD_REQUEST);
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "User with this email already exists." });
     }
 
     const user = await User.create({ name, email, password });
@@ -31,4 +33,4 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = {register}
+module.exports = { register };

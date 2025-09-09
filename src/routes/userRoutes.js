@@ -1,10 +1,32 @@
-const express = require('express')
-const { register, login } = require('../controllers/userController')
+const express = require("express");
+const {
+  register,
+  login,
+  getUserProfile,
+  updateUserProfile,
+  // toggleLikeSong,
+  // toggleFollowArtist,
+  // toggleFollowPlaylist,
+} = require("../controllers/userController");
+const { protect } = require("../middlewares/auth");
+const upload = require("../middlewares/upload");
 
-const userRouter = express.Router()
+const userRouter = express.Router();
 
-userRouter.post('/register', register)
+userRouter.post("/register", register);
+userRouter.post("/login", login);
 
-userRouter.post('/login', login)
+userRouter.get("/profile", protect, getUserProfile)
 
-module.exports = userRouter
+userRouter.put(
+  "/profile",
+  protect,
+  upload.single("profilePicture"),
+  updateUserProfile
+);
+
+// userRouter.put("/like-song/:id", protect, toggleLikeSong);
+// userRouter.put("/follow-artist/:id", protect, toggleFollowArtist);
+// userRouter.put("/follow-playlist/:id", protect, toggleFollowPlaylist);
+
+module.exports = userRouter;

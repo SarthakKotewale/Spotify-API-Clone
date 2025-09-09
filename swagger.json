@@ -19,7 +19,6 @@
     }
   ],
   "paths": {
-
     "/api/users/register": {
       "post": {
         "summary": "Register a new user",
@@ -188,6 +187,254 @@
               }
             }
           }
+        }
+      }
+    },
+
+    "/api/users/profile": {
+      "get": {
+        "summary": "Get the current user's profile",
+        "description": "Retrieves the full profile for the authenticated user, including liked songs, followed artists, and playlists. Requires a valid JWT.",
+        "tags": ["Users"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile data retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string" },
+                    "name": { "type": "string" },
+                    "email": { "type": "string" },
+                    "isAdmin": { "type": "boolean" },
+                    "profilePicture": { "type": "string" },
+                    "likedSongs": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    },
+                    "likedAlbums": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    },
+                    "followedArtists": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    },
+                    "followedPlaylists": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    }
+                  },
+                  "example": {
+                    "_id": "638e2f8f5e1b1b1b1b1b1b1b",
+                    "name": "John Doe",
+                    "email": "john.doe@example.com",
+                    "isAdmin": false,
+                    "profilePicture": "path/to/pic.jpg",
+                    "likedSongs": [],
+                    "likedAlbums": [],
+                    "followedArtists": [],
+                    "followedPlaylists": []
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token is missing or invalid."
+          },
+          "404": { "description": "Not Found - User not found." }
+        }
+      },
+      "put": {
+        "summary": "Update the current user's profile",
+        "description": "Updates the authenticated user's name, email, password, or profile picture. All fields are optional. Requires a valid JWT.",
+        "tags": ["Users"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "New name for the user."
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "New email for the user."
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "New password for the user."
+                  },
+                  "profilePicture": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Image file to upload as the new profile picture."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/paths/~1api~1users~1register/post/responses/201/content/application~1json/schema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token is missing or invalid."
+          },
+          "404": { "description": "Not Found - User not found." }
+        }
+      }
+    },
+
+    "/api/users/like-song/{id}": {
+      "put": {
+        "summary": "Like or unlike a song",
+        "description": "Toggles the 'liked' status of a specific song for the authenticated user. Requires a valid JWT.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the song to like or unlike.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Action successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "likedSongs": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "message": { "type": "string" }
+                  },
+                  "example": {
+                    "likedSongs": ["638e2f8f5e1b1b1b1b1c1d1e"],
+                    "message": "Song added to liked songs"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized." },
+          "404": { "description": "User or Song not found." }
+        }
+      }
+    },
+
+    "/api/users/follow-artist/{id}": {
+      "put": {
+        "summary": "Follow or unfollow an artist",
+        "description": "Toggles the 'followed' status of a specific artist for the authenticated user. Requires a valid JWT.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the artist to follow or unfollow.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Action successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "followedArtists": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "message": { "type": "string" }
+                  },
+                  "example": {
+                    "followedArtists": ["638e2f8f5e1b1b1b1b1f2g2h"],
+                    "message": "Artist followed"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized." },
+          "404": { "description": "User or Artist not found." }
+        }
+      }
+    },
+    
+    "/api/users/follow-playlist/{id}": {
+      "put": {
+        "summary": "Follow or unfollow a playlist",
+        "description": "Toggles the 'followed' status of a specific playlist for the authenticated user. Requires a valid JWT.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the playlist to follow or unfollow.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Action successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "followedPlaylists": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "message": { "type": "string" }
+                  },
+                  "example": {
+                    "followedPlaylists": ["638e2f8f5e1b1b1b1b3i4j5k"],
+                    "message": "Playlist followed"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized." },
+          "404": { "description": "User or Playlist not found." }
         }
       }
     }

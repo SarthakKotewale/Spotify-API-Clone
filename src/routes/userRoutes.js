@@ -4,9 +4,9 @@ const {
   login,
   getUserProfile,
   updateUserProfile,
-  // toggleLikeSong,
-  // toggleFollowArtist,
-  // toggleFollowPlaylist,
+  toggleLikeSong,
+  toggleFollowArtist,
+  toggleFollowPlaylist,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/auth");
 const upload = require("../middlewares/upload");
@@ -25,8 +25,9 @@ userRouter.put(
   updateUserProfile
 );
 
-// userRouter.put("/like-song/:id", protect, toggleLikeSong);
-// userRouter.put("/follow-artist/:id", protect, toggleFollowArtist);
-// userRouter.put("/follow-playlist/:id", protect, toggleFollowPlaylist);
+userRouter.put("/like-song/:id", protect, toggleLikeSong); //left to test
+userRouter.put("/follow-artist/:id", protect, toggleFollowArtist); //left to test
+
+userRouter.put("/follow-playlist/:id", protect, toggleFollowPlaylist); //left to test
 
 module.exports = userRouter;

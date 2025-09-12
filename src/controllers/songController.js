@@ -5,10 +5,11 @@ const Playlist = require("../models/Playlist");
 const Artist = require("../models/Artist");
 const Song = require("../models/Song")
 const { uploadToCloudinary } = require("../utils/cloudinaryUpload");
+const mm = require('music-metadata');
 
 const createSong = async (req, res) => {
     try {
-        const { title, artistId, albumId, duration, genre, lyrics, isExplicit, featuredArtists } = req.body
+        const { title, artistId, albumId, genre, lyrics, isExplicit, featuredArtists } = req.body
         const artist = await Artist.findById(artistId)
         if (!artist) {
             res.status(StatusCodes.NOT_FOUND);
@@ -25,7 +26,11 @@ const createSong = async (req, res) => {
             res.status(StatusCodes.BAD_REQUEST);
             throw new Error("Audio file is required");
         }
-        const audioResult = await uploadToCloudinary(req.files.audio[0].path, "spotify/songs")
+        const audioPath = req.files.audio[0].path
+        const metadata = await mm.parseFile(audioPath)
+        const durationInSeconds = Math.floor(metadata.format.duration)
+
+        const audioResult = await uploadToCloudinary(audioPath, "spotify/songs")
 
         let coverImageUrl = ""
         if (req.files && req.files.cover) {
@@ -33,17 +38,17 @@ const createSong = async (req, res) => {
             coverImageUrl = imageResult.secure_url
         }
 
-        let parsedDuration = duration;
-        if (typeof duration === "string" && duration.includes(":")) {
-            const [minutes, seconds] = duration.split(":").map(Number);
-            parsedDuration = minutes * 60 + seconds;
-        }
+        // let parsedDuration = duration;
+        // if (typeof duration === "string" && duration.includes(":")) {
+        //     const [minutes, seconds] = duration.split(":").map(Number);
+        //     parsedDuration = minutes * 60 + seconds;
+        // }
 
         const song = await Song.create({
             title,
             artist: artistId,
             album: albumId || null,
-            duration: parsedDuration,
+            duration: durationInSeconds,
             audioUrl: audioResult.secure_url,
             genre,
             lyrics,

@@ -4,7 +4,9 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../swagger.json");
 const { StatusCodes } = require("http-status-codes");
 const dotenv = require("dotenv");
-const userRouter = require("./routes/userRoutes");;
+const userRouter = require("./routes/userRoutes");
+const songRouter = require("./routes/songRoutes")
+const artistRouter = require("./routes/artistRoutes")
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ app.use(express.json());
 
 //Routes
 app.use("/api/users", userRouter);
+app.use("/api/songs", songRouter);
+app.use("/api/artists", artistRouter)
 
 app.use((req, res, next) => {
   const error = new Error("Not Found");

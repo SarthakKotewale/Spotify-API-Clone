@@ -17,15 +17,16 @@
       "description": "Operations about users"
     },
     {
-      "name:": "Songs",
+      "name": "Songs",
       "description": "Operations about songs"
     },
     {
-      "name:": "Artists",
+      "name": "Artists",
       "description": "Operations about artists"
     }
   ],
   "paths": {
+    
     "/api/users/register": {
       "post": {
         "summary": "Register a new user",
@@ -143,6 +144,7 @@
         }
       }
     },
+
     "/api/users/login": {
       "post": {
         "summary": "Authenticate a user",
@@ -241,6 +243,7 @@
         }
       }
     },
+
     "/api/users/profile": {
       "get": {
         "summary": "Get the current user's profile",
@@ -385,6 +388,7 @@
         }
       }
     },
+
     "/api/users/like-song/{id}": {
       "put": {
         "summary": "Like or unlike a song",
@@ -445,6 +449,7 @@
         }
       }
     },
+
     "/api/users/follow-artist/{id}": {
       "put": {
         "summary": "Follow or unfollow an artist",
@@ -505,6 +510,7 @@
         }
       }
     },
+
     "/api/users/follow-playlist/{id}": {
       "put": {
         "summary": "Follow or unfollow a playlist",
@@ -565,6 +571,7 @@
         }
       }
     },
+
     "/api/songs": {
       "post": {
         "tags": [
@@ -656,8 +663,101 @@
             "description": "Internal server error"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Get all songs",
+        "description": "Retrieve a list of songs with optional filtering by genre, artist, search, and pagination.",
+        "operationId": "getSongs",
+        "parameters": [
+          {
+            "name": "genre",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter songs by genre"
+          },
+          {
+            "name": "artist",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter songs by artist ID"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search songs by title or genre (case-insensitive)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Number of songs per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of songs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "songs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Song"
+                      }
+                    },
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "pages": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "totalSongs": {
+                      "type": "integer",
+                      "example": 42
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
       }
     },
+
     "/api/artists": {
       "post": {
         "tags": [
@@ -727,114 +827,6 @@
           },
           "500": {
             "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "components": {
-      "schemas": {
-        "Artist": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "64aef7a23b97c9f12345abcd"
-            },
-            "name": {
-              "type": "string",
-              "example": "Taylor Swift"
-            },
-            "bio": {
-              "type": "string",
-              "example": "American singer-songwriter. Known for narrative songwriting."
-            },
-            "genres": {
-              "type": "string",
-              "example": "Pop, Country"
-            },
-            "image": {
-              "type": "string",
-              "example": "https://res.cloudinary.com/demo/image/upload/v12345/spotify/artists/abc.jpg"
-            },
-            "isVerified": {
-              "type": "boolean",
-              "example": true
-            },
-            "createdAt": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2025-09-11T15:30:00.000Z"
-            },
-            "updatedAt": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2025-09-11T15:30:00.000Z"
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    },
-    "schemas": {
-      "Song": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "example": "64f8d9b3c1e5f8a2b3c1e5f7"
-          },
-          "title": {
-            "type": "string",
-            "example": "Shape of You"
-          },
-          "artist": {
-            "type": "string",
-            "example": "64f8a2b3c1e5f8a2b3c1e5f9"
-          },
-          "album": {
-            "type": "string",
-            "example": "64f8b3a1d2e5a8b3c1e5f8d2"
-          },
-          "duration": {
-            "type": "integer",
-            "example": 263
-          },
-          "audioUrl": {
-            "type": "string",
-            "example": "https://res.cloudinary.com/demo/song.mp3"
-          },
-          "genre": {
-            "type": "string",
-            "example": "Pop"
-          },
-          "lyrics": {
-            "type": "string",
-            "example": "The club isn't the best place to find a lover..."
-          },
-          "isExplicit": {
-            "type": "boolean",
-            "example": false
-          },
-          "featuredArtists": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "64f8c3a1d2e5a8b3c1e5f8a9"
-            ]
-          },
-          "coverImage": {
-            "type": "string",
-            "example": "https://res.cloudinary.com/demo/cover.jpg"
           }
         }
       }

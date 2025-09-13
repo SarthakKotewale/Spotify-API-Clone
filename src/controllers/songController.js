@@ -72,4 +72,53 @@ const createSong = async (req, res) => {
     }
 }
 
-module.exports = { createSong }
+const getSongs = async(req, res) => {
+    try{
+        const {genre, artist, search, page = 1, limit = 10} = req.query
+
+        const filter = {}
+        if(genre){
+            filter.genre = genre
+        }
+        if(artist){
+            filter.artist = artist
+        }
+        if(search){
+            filter.$or = [
+                {
+                    title: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                },
+                {
+                    genre: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                }
+            ]
+        }
+        const count = await Song.countDocuments(filter)
+        const skip = (parseInt(page) - 1) * parseInt(limit)
+        const songs = await Song.find(filter)
+            .sort({releaseDate: -1})
+            .limit(parseInt(limit))
+            .skip(skip)
+            .populate("artist", "name image")
+            .populate("album", "name coverImage")
+            .populate("featuredArtists", "name")
+        
+        res.status(StatusCodes.OK).json({
+            songs,
+            page: parseInt(page),
+            pages: Math.ceil(count / parseInt(limit)),
+            totalSongs: count
+        })
+    }catch(error){
+        console.error("Error in getSongs", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createSong, getSongs }

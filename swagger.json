@@ -1,4 +1,3 @@
-
 {
   "openapi": "3.0.0",
   "info": {
@@ -16,6 +15,14 @@
     {
       "name": "Users",
       "description": "Operations about users"
+    },
+    {
+      "name:": "Songs",
+      "description": "Operations about songs"
+    },
+    {
+      "name:": "Artists",
+      "description": "Operations about artists"
     }
   ],
   "paths": {
@@ -23,14 +30,20 @@
       "post": {
         "summary": "Register a new user",
         "description": "Creates a new user account. The email must be unique.",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["name", "email", "password"],
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -64,11 +77,21 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "_id": { "type": "string" },
-                    "name": { "type": "string" },
-                    "email": { "type": "string" },
-                    "isAdmin": { "type": "boolean" },
-                    "profilePicture": { "type": "string" }
+                    "_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "isAdmin": {
+                      "type": "boolean"
+                    },
+                    "profilePicture": {
+                      "type": "string"
+                    }
                   },
                   "example": {
                     "_id": "638e2f8f5e1b1b1b1b1b1b1b",
@@ -87,7 +110,11 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "message": { "type": "string" } },
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
                   "example": {
                     "message": "User with this email already exists."
                   }
@@ -101,7 +128,11 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "message": { "type": "string" } },
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
                   "example": {
                     "message": "Something went wrong, please try again."
                   }
@@ -112,19 +143,23 @@
         }
       }
     },
-
     "/api/users/login": {
       "post": {
         "summary": "Authenticate a user",
         "description": "Logs in a user with their email and password, returning a JWT.",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["email", "password"],
+                "required": [
+                  "email",
+                  "password"
+                ],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -153,11 +188,21 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "_id": { "type": "string" },
-                    "name": { "type": "string" },
-                    "email": { "type": "string" },
-                    "isAdmin": { "type": "boolean" },
-                    "profilePicture": { "type": "string" },
+                    "_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "isAdmin": {
+                      "type": "boolean"
+                    },
+                    "profilePicture": {
+                      "type": "string"
+                    },
                     "token": {
                       "type": "string",
                       "description": "JWT for authorization"
@@ -181,8 +226,14 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "message": { "type": "string" } },
-                  "example": { "message": "Invaliddd email or password" }
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Invaliddd email or password"
+                  }
                 }
               }
             }
@@ -190,15 +241,16 @@
         }
       }
     },
-
     "/api/users/profile": {
       "get": {
         "summary": "Get the current user's profile",
         "description": "Retrieves the full profile for the authenticated user, including liked songs, followed artists, and playlists. Requires a valid JWT.",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -209,26 +261,44 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "_id": { "type": "string" },
-                    "name": { "type": "string" },
-                    "email": { "type": "string" },
-                    "isAdmin": { "type": "boolean" },
-                    "profilePicture": { "type": "string" },
+                    "_id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "isAdmin": {
+                      "type": "boolean"
+                    },
+                    "profilePicture": {
+                      "type": "string"
+                    },
                     "likedSongs": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "likedAlbums": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "followedArtists": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "followedPlaylists": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   },
                   "example": {
@@ -249,16 +319,20 @@
           "401": {
             "description": "Unauthorized - Token is missing or invalid."
           },
-          "404": { "description": "Not Found - User not found." }
+          "404": {
+            "description": "Not Found - User not found."
+          }
         }
       },
       "put": {
         "summary": "Update the current user's profile",
         "description": "Updates the authenticated user's name, email, password, or profile picture. All fields are optional. Requires a valid JWT.",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "requestBody": {
@@ -305,24 +379,33 @@
           "401": {
             "description": "Unauthorized - Token is missing or invalid."
           },
-          "404": { "description": "Not Found - User not found." }
+          "404": {
+            "description": "Not Found - User not found."
+          }
         }
       }
     },
-
     "/api/users/like-song/{id}": {
       "put": {
         "summary": "Like or unlike a song",
         "description": "Toggles the 'liked' status of a specific song for the authenticated user. Requires a valid JWT.",
-        "tags": ["Users"],
-        "security": [{ "BearerAuth": [] }],
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the song to like or unlike.",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -335,37 +418,54 @@
                   "properties": {
                     "likedSongs": {
                       "type": "array",
-                      "items": { "type": "string" }
+                      "items": {
+                        "type": "string"
+                      }
                     },
-                    "message": { "type": "string" }
+                    "message": {
+                      "type": "string"
+                    }
                   },
                   "example": {
-                    "likedSongs": ["638e2f8f5e1b1b1b1b1c1d1e"],
+                    "likedSongs": [
+                      "638e2f8f5e1b1b1b1b1c1d1e"
+                    ],
                     "message": "Song added to liked songs"
                   }
                 }
               }
             }
           },
-          "401": { "description": "Unauthorized." },
-          "404": { "description": "User or Song not found." }
+          "401": {
+            "description": "Unauthorized."
+          },
+          "404": {
+            "description": "User or Song not found."
+          }
         }
       }
     },
-
     "/api/users/follow-artist/{id}": {
       "put": {
         "summary": "Follow or unfollow an artist",
         "description": "Toggles the 'followed' status of a specific artist for the authenticated user. Requires a valid JWT.",
-        "tags": ["Users"],
-        "security": [{ "BearerAuth": [] }],
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the artist to follow or unfollow.",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -378,37 +478,54 @@
                   "properties": {
                     "followedArtists": {
                       "type": "array",
-                      "items": { "type": "string" }
+                      "items": {
+                        "type": "string"
+                      }
                     },
-                    "message": { "type": "string" }
+                    "message": {
+                      "type": "string"
+                    }
                   },
                   "example": {
-                    "followedArtists": ["638e2f8f5e1b1b1b1b1f2g2h"],
+                    "followedArtists": [
+                      "638e2f8f5e1b1b1b1b1f2g2h"
+                    ],
                     "message": "Artist followed"
                   }
                 }
               }
             }
           },
-          "401": { "description": "Unauthorized." },
-          "404": { "description": "User or Artist not found." }
+          "401": {
+            "description": "Unauthorized."
+          },
+          "404": {
+            "description": "User or Artist not found."
+          }
         }
       }
     },
-    
     "/api/users/follow-playlist/{id}": {
       "put": {
         "summary": "Follow or unfollow a playlist",
         "description": "Toggles the 'followed' status of a specific playlist for the authenticated user. Requires a valid JWT.",
-        "tags": ["Users"],
-        "security": [{ "BearerAuth": [] }],
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "description": "The ID of the playlist to follow or unfollow.",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -421,20 +538,304 @@
                   "properties": {
                     "followedPlaylists": {
                       "type": "array",
-                      "items": { "type": "string" }
+                      "items": {
+                        "type": "string"
+                      }
                     },
-                    "message": { "type": "string" }
+                    "message": {
+                      "type": "string"
+                    }
                   },
                   "example": {
-                    "followedPlaylists": ["638e2f8f5e1b1b1b1b3i4j5k"],
+                    "followedPlaylists": [
+                      "638e2f8f5e1b1b1b1b3i4j5k"
+                    ],
                     "message": "Playlist followed"
                   }
                 }
               }
             }
           },
-          "401": { "description": "Unauthorized." },
-          "404": { "description": "User or Playlist not found." }
+          "401": {
+            "description": "Unauthorized."
+          },
+          "404": {
+            "description": "User or Playlist not found."
+          }
+        }
+      }
+    },
+    "/api/songs": {
+      "post": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Create a new song - Admin only",
+        "description": "Uploads a new song with audio, optional cover image, and metadata.",
+        "operationId": "createSong",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Shape of You"
+                  },
+                  "artistId": {
+                    "type": "string",
+                    "example": "64f8a2b3c1e5f8a2b3c1e5f9"
+                  },
+                  "albumId": {
+                    "type": "string",
+                    "example": "64f8b3a1d2e5a8b3c1e5f8d2",
+                    "nullable": true
+                  },
+                  "genre": {
+                    "type": "string",
+                    "example": "Pop"
+                  },
+                  "lyrics": {
+                    "type": "string",
+                    "example": "The club isn't the best place to find a lover..."
+                  },
+                  "isExplicit": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "featuredArtists": {
+                    "type": "string",
+                    "description": "JSON array of featured artist IDs",
+                    "example": "[\"64f8c3a1d2e5a8b3c1e5f8a9\"]"
+                  },
+                  "audio": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Audio file (required, e.g. mp3, wav, m4a)"
+                  },
+                  "cover": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Cover image (optional)"
+                  }
+                },
+                "required": [
+                  "title",
+                  "artistId",
+                  "audio"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Song created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Song"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Missing audio file or invalid input"
+          },
+          "404": {
+            "description": "Artist or album not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/artists": {
+      "post": {
+        "tags": [
+          "Artists"
+        ],
+        "summary": "Create a new artist",
+        "description": "Only admins can create artists. Upload artist details along with an optional image.",
+        "operationId": "createArtist",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Taylor Swift"
+                  },
+                  "bio": {
+                    "type": "string",
+                    "example": "American singer-songwriter. Known for narrative songwriting."
+                  },
+                  "genres": {
+                    "type": "string",
+                    "example": "Pop, Country"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Artist image file"
+                  }
+                },
+                "required": [
+                  "name",
+                  "bio",
+                  "genres"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Artist created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Artist"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing fields or artist already exists"
+          },
+          "401": {
+            "description": "Unauthorized - no token provided"
+          },
+          "403": {
+            "description": "Forbidden - user is not an admin"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Artist": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "64aef7a23b97c9f12345abcd"
+            },
+            "name": {
+              "type": "string",
+              "example": "Taylor Swift"
+            },
+            "bio": {
+              "type": "string",
+              "example": "American singer-songwriter. Known for narrative songwriting."
+            },
+            "genres": {
+              "type": "string",
+              "example": "Pop, Country"
+            },
+            "image": {
+              "type": "string",
+              "example": "https://res.cloudinary.com/demo/image/upload/v12345/spotify/artists/abc.jpg"
+            },
+            "isVerified": {
+              "type": "boolean",
+              "example": true
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-11T15:30:00.000Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-11T15:30:00.000Z"
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Song": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "64f8d9b3c1e5f8a2b3c1e5f7"
+          },
+          "title": {
+            "type": "string",
+            "example": "Shape of You"
+          },
+          "artist": {
+            "type": "string",
+            "example": "64f8a2b3c1e5f8a2b3c1e5f9"
+          },
+          "album": {
+            "type": "string",
+            "example": "64f8b3a1d2e5a8b3c1e5f8d2"
+          },
+          "duration": {
+            "type": "integer",
+            "example": 263
+          },
+          "audioUrl": {
+            "type": "string",
+            "example": "https://res.cloudinary.com/demo/song.mp3"
+          },
+          "genre": {
+            "type": "string",
+            "example": "Pop"
+          },
+          "lyrics": {
+            "type": "string",
+            "example": "The club isn't the best place to find a lover..."
+          },
+          "isExplicit": {
+            "type": "boolean",
+            "example": false
+          },
+          "featuredArtists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "64f8c3a1d2e5a8b3c1e5f8a9"
+            ]
+          },
+          "coverImage": {
+            "type": "string",
+            "example": "https://res.cloudinary.com/demo/cover.jpg"
+          }
         }
       }
     }

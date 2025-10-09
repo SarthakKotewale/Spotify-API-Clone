@@ -31,7 +31,7 @@ app.use("/api/songs", songRouter);
 app.use("/api/artists", artistRouter)
 
 app.use((req, res, next) => {
-  const error = new Error("Not Found");
+  const error = new Error("Not Foundddd");
   error.status = StatusCodes.NOT_FOUND;
   next(error);
 });

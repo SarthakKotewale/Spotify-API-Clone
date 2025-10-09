@@ -53,7 +53,8 @@ const createSong = async (req, res) => {
             genre,
             lyrics,
             isExplicit: isExplicit === 'true',
-            featuredArtists: featuredArtists ? JSON.parse(featuredArtists) : [],
+            // featuredArtists: featuredArtists ? JSON.parse(featuredArtists) : [],
+            featuredArtists: featuredArtists || [],
             coverImage: coverImageUrl
         })
 
@@ -184,4 +185,26 @@ const updateSong = async (req, res) => {
     }
 }
 
-module.exports = { createSong, getSongs, getSongById, updateSong}
+const deleteSong = async (req, res) => {
+    try {
+        const song = await Song.findById(req.params.id)
+        if (!song) {
+            res.status(StatusCodes.NOT_FOUND)
+            throw new Error("Song not found")
+        }
+
+        await Artist.updateOne({ _id: song.artist }, { $pull: { songs: song._id } })
+
+        if (song.album) {
+            await Album.updateOne({ _id: song.album }, { $pull: { songs: song._id } })
+        }
+
+        await song.deleteOne()
+        res.status(StatusCodes.OK).json({ message: "Song deleted" });
+    } catch (error) {
+        console.error("Error in deleteSong", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createSong, getSongs, getSongById, updateSong, deleteSong }

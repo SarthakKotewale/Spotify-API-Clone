@@ -25,6 +25,16 @@
       "description": "Operations about artists"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT token in the format: Bearer <token>"
+      }
+    }
+  },
   "paths": {
     "/api/users/register": {
       "post": {
@@ -250,7 +260,7 @@
         ],
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -332,7 +342,7 @@
         ],
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "requestBody": {
@@ -394,7 +404,7 @@
         ],
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -454,7 +464,7 @@
         ],
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -514,7 +524,7 @@
         ],
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -575,7 +585,7 @@
         "operationId": "createSong",
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "requestBody": {
@@ -931,6 +941,11 @@
         ],
         "summary": "Update a song's details",
         "description": "Updates an existing song by its ID. Can update metadata and/or upload new cover image and audio files. All fields are optional.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -1106,6 +1121,76 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Delete a song by ID (Admin only)",
+        "description": "Deletes a specific song by its unique ID. This action also removes the song's reference from its associated artist and album. This is a protected route and requires administrator privileges.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the song to delete.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Song deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Song deleted"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - JWT token is missing or invalid."
+          },
+          "403": {
+            "description": "Forbidden - User is not an administrator."
+          },
+          "404": {
+            "description": "Not Found - The song with the specified ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Song not found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
       }
     },
     "/api/artists": {
@@ -1118,7 +1203,7 @@
         "operationId": "createArtist",
         "security": [
           {
-            "bearerAuth": []
+            "BearerAuth": []
           }
         ],
         "requestBody": {

@@ -760,6 +760,114 @@
         }
       }
     },
+
+    "/api/songs/top":{
+      "get": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Get top played songs",
+        "description": "Retrieves a list of the most played songs, sorted in descending order of play count. The number of songs returned can be controlled with the optional 'limit' query parameter.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The maximum number of top songs to return. Defaults to 10.",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of top songs retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "plays": {
+                        "type": "number"
+                      },
+                      "duration": {
+                        "type": "number"
+                      },
+                      "coverImage": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "artist": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "type": "string",
+                            "format": "uri"
+                          }
+                        }
+                      },
+                      "album": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "coverImage": {
+                            "type": "string",
+                            "format": "uri"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "638e3a9c1e1d1f2e1c1b1b1b",
+                    "title": "Blinding Lights",
+                    "plays": 9876543,
+                    "duration": 200,
+                    "coverImage": "https://example.com/blindinglights.jpg",
+                    "artist": {
+                      "_id": "638e3b1d1e1d1f2e1c1c1c1c",
+                      "name": "The Weeknd",
+                      "image": "https://example.com/theweeknd.jpg"
+                    },
+                    "album": {
+                      "_id": "638e3c4e1e1d1f2e1c1d1d1d",
+                      "title": "After Hours",
+                      "coverImage": "https://example.com/afterhours.jpg"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+
     "/api/songs/{id}": {
       "get": {
         "tags": [

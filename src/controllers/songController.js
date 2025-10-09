@@ -12,11 +12,11 @@ const createSong = async (req, res) => {
         const { title, artistId, albumId, genre, lyrics, isExplicit, featuredArtists } = req.body
         const artist = await Artist.findById(artistId)
         if (!artist) {
-            res.status(StatusCodes.NOT_FOUND);
+            res.status(StatusCodes.NOT_FOUND);  
             throw new Error("Artist not found");
         }
         if (albumId) {
-            const album = await Album.findById(albumId)
+            const album = await Album.findById(albumId) 
             if (!album) {
                 res.status(StatusCodes.NOT_FOUND);
                 throw new Error("Album not found");
@@ -121,4 +121,23 @@ const getSongs = async(req, res) => {
     }
 }
 
-module.exports = { createSong, getSongs }
+const getSongById = async(req, res) => {
+    try{
+        const id = req.params.id
+        const existingSong = await Song.findById(id)
+        .populate("artist", "name image bio")
+        .populate("album", "title coverImage releasedDate")
+        .populate("featuredArtists", "name image")
+
+        if(!existingSong){
+            return res.status(StatusCodes.NOT_FOUND)
+            // throw new Error("Song not found");
+        }
+        res.status(StatusCodes.OK).json({existingSong})
+    }catch(err){
+        console.error("Error in getSongsById", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createSong, getSongs, getSongById}

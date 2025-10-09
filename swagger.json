@@ -758,6 +758,140 @@
       }
     },
 
+    "/api/songs/{id}": {
+      "get": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Get a specific song by its ID",
+        "description": "Retrieves detailed information for a single song, including populated data for the main artist, album, and any featured artists.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the song to retrieve.",
+            "schema": {
+              "type": "string",
+              "example": "638e3a9c1e1d1f2e1c1b1b1b"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Song details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "existingSong": {
+                      "type": "object",
+                      "properties": {
+                        "_id": { "type": "string" },
+                        "title": { "type": "string" },
+                        "duration": { "type": "number" },
+                        "genre": { "type": "string" },
+                        "releaseDate": { "type": "string", "format": "date-time" },
+                        "artist": {
+                          "type": "object",
+                          "description": "The main artist of the song.",
+                          "properties": {
+                            "_id": { "type": "string" },
+                            "name": { "type": "string" },
+                            "image": { "type": "string", "format": "uri" },
+                            "bio": { "type": "string" }
+                          }
+                        },
+                        "album": {
+                          "type": "object",
+                          "description": "The album the song belongs to.",
+                          "properties": {
+                            "_id": { "type": "string" },
+                            "title": { "type": "string" },
+                            "coverImage": { "type": "string", "format": "uri" },
+                            "releasedDate": { "type": "string", "format": "date-time" }
+                          }
+                        },
+                        "featuredArtists": {
+                          "type": "array",
+                          "description": "A list of featured artists on the song.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": { "type": "string" },
+                              "name": { "type": "string" },
+                              "image": { "type": "string", "format": "uri" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "existingSong": {
+                    "_id": "638e3a9c1e1d1f2e1c1b1b1b",
+                    "title": "Bohemian Rhapsody",
+                    "duration": 355,
+                    "genre": "Rock",
+                    "releaseDate": "1975-10-31T00:00:00.000Z",
+                    "artist": {
+                      "_id": "638e3b1d1e1d1f2e1c1c1c1c",
+                      "name": "Queen",
+                      "image": "https://example.com/queen.jpg",
+                      "bio": "A British rock band formed in London in 1970."
+                    },
+                    "album": {
+                      "_id": "638e3c4e1e1d1f2e1c1d1d1d",
+                      "title": "A Night at the Opera",
+                      "coverImage": "https://example.com/anightattheopera.jpg",
+                      "releasedDate": "1975-11-21T00:00:00.000Z"
+                    },
+                    "featuredArtists": []
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - The song with the specified ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  },
+                  "example": {
+                    "message": "Song not found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "error": { "type": "string" }
+                  },
+                  "example": {
+                    "message": "Something went wrong",
+                    "error": "Error details..."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/api/artists": {
       "post": {
         "tags": [

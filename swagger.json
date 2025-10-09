@@ -26,7 +26,6 @@
     }
   ],
   "paths": {
-    
     "/api/users/register": {
       "post": {
         "summary": "Register a new user",
@@ -144,7 +143,6 @@
         }
       }
     },
-
     "/api/users/login": {
       "post": {
         "summary": "Authenticate a user",
@@ -243,7 +241,6 @@
         }
       }
     },
-
     "/api/users/profile": {
       "get": {
         "summary": "Get the current user's profile",
@@ -388,7 +385,6 @@
         }
       }
     },
-
     "/api/users/like-song/{id}": {
       "put": {
         "summary": "Like or unlike a song",
@@ -449,7 +445,6 @@
         }
       }
     },
-
     "/api/users/follow-artist/{id}": {
       "put": {
         "summary": "Follow or unfollow an artist",
@@ -510,7 +505,6 @@
         }
       }
     },
-
     "/api/users/follow-playlist/{id}": {
       "put": {
         "summary": "Follow or unfollow a playlist",
@@ -571,7 +565,6 @@
         }
       }
     },
-
     "/api/songs": {
       "post": {
         "tags": [
@@ -757,7 +750,6 @@
         }
       }
     },
-
     "/api/songs/{id}": {
       "get": {
         "tags": [
@@ -788,29 +780,59 @@
                     "existingSong": {
                       "type": "object",
                       "properties": {
-                        "_id": { "type": "string" },
-                        "title": { "type": "string" },
-                        "duration": { "type": "number" },
-                        "genre": { "type": "string" },
-                        "releaseDate": { "type": "string", "format": "date-time" },
+                        "_id": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "duration": {
+                          "type": "number"
+                        },
+                        "genre": {
+                          "type": "string"
+                        },
+                        "releaseDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
                         "artist": {
                           "type": "object",
                           "description": "The main artist of the song.",
                           "properties": {
-                            "_id": { "type": "string" },
-                            "name": { "type": "string" },
-                            "image": { "type": "string", "format": "uri" },
-                            "bio": { "type": "string" }
+                            "_id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "image": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "bio": {
+                              "type": "string"
+                            }
                           }
                         },
                         "album": {
                           "type": "object",
                           "description": "The album the song belongs to.",
                           "properties": {
-                            "_id": { "type": "string" },
-                            "title": { "type": "string" },
-                            "coverImage": { "type": "string", "format": "uri" },
-                            "releasedDate": { "type": "string", "format": "date-time" }
+                            "_id": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "coverImage": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "releasedDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
                           }
                         },
                         "featuredArtists": {
@@ -819,9 +841,16 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "_id": { "type": "string" },
-                              "name": { "type": "string" },
-                              "image": { "type": "string", "format": "uri" }
+                              "_id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "image": {
+                                "type": "string",
+                                "format": "uri"
+                              }
                             }
                           }
                         }
@@ -861,7 +890,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": { "type": "string" }
+                    "message": {
+                      "type": "string"
+                    }
                   },
                   "example": {
                     "message": "Song not found"
@@ -877,8 +908,194 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": { "type": "string" },
-                    "error": { "type": "string" }
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Something went wrong",
+                    "error": "Error details..."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Update a song's details",
+        "description": "Updates an existing song by its ID. Can update metadata and/or upload new cover image and audio files. All fields are optional.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the song to update.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The new title of the song."
+                  },
+                  "artistId": {
+                    "type": "string",
+                    "description": "The ID of the main artist."
+                  },
+                  "albumId": {
+                    "type": "string",
+                    "description": "The ID of the album."
+                  },
+                  "duration": {
+                    "type": "number",
+                    "description": "The duration of the song in seconds."
+                  },
+                  "genre": {
+                    "type": "string",
+                    "description": "The genre of the song."
+                  },
+                  "lyrics": {
+                    "type": "string",
+                    "description": "The lyrics of the song."
+                  },
+                  "isExplicit": {
+                    "type": "boolean",
+                    "description": "Whether the song contains explicit content."
+                  },
+                  "featuredArtists": {
+                    "type": "string",
+                    "description": "A JSON string representing an array of artist IDs. Example: '[\"artistId1\", \"artistId2\"]'"
+                  },
+                  "cover": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "New cover image file for the song."
+                  },
+                  "audio": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "New audio file for the song."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Song updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "artist": {
+                      "type": "string"
+                    },
+                    "album": {
+                      "type": "string"
+                    },
+                    "duration": {
+                      "type": "number"
+                    },
+                    "audioUrl": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "coverImage": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "releaseDate": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "genre": {
+                      "type": "string"
+                    },
+                    "lyrics": {
+                      "type": "string"
+                    },
+                    "plays": {
+                      "type": "number"
+                    },
+                    "likes": {
+                      "type": "number"
+                    },
+                    "isExplicit": {
+                      "type": "boolean"
+                    },
+                    "featuredArtists": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - The song with the specified ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Song not found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
                   },
                   "example": {
                     "message": "Something went wrong",
@@ -891,7 +1108,6 @@
         }
       }
     },
-
     "/api/artists": {
       "post": {
         "tags": [

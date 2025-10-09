@@ -12,11 +12,11 @@ const createSong = async (req, res) => {
         const { title, artistId, albumId, genre, lyrics, isExplicit, featuredArtists } = req.body
         const artist = await Artist.findById(artistId)
         if (!artist) {
-            res.status(StatusCodes.NOT_FOUND);  
+            res.status(StatusCodes.NOT_FOUND);
             throw new Error("Artist not found");
         }
         if (albumId) {
-            const album = await Album.findById(albumId) 
+            const album = await Album.findById(albumId)
             if (!album) {
                 res.status(StatusCodes.NOT_FOUND);
                 throw new Error("Album not found");
@@ -72,18 +72,18 @@ const createSong = async (req, res) => {
     }
 }
 
-const getSongs = async(req, res) => {
-    try{
-        const {genre, artist, search, page = 1, limit = 10} = req.query
+const getSongs = async (req, res) => {
+    try {
+        const { genre, artist, search, page = 1, limit = 10 } = req.query
 
         const filter = {}
-        if(genre){
+        if (genre) {
             filter.genre = genre
         }
-        if(artist){
+        if (artist) {
             filter.artist = artist
         }
-        if(search){
+        if (search) {
             filter.$or = [
                 {
                     title: {
@@ -102,42 +102,86 @@ const getSongs = async(req, res) => {
         const count = await Song.countDocuments(filter)
         const skip = (parseInt(page) - 1) * parseInt(limit)
         const songs = await Song.find(filter)
-            .sort({releaseDate: -1})
+            .sort({ releaseDate: -1 })
             .limit(parseInt(limit))
             .skip(skip)
             .populate("artist", "name image")
             .populate("album", "name coverImage")
             .populate("featuredArtists", "name")
-        
+
         res.status(StatusCodes.OK).json({
             songs,
             page: parseInt(page),
             pages: Math.ceil(count / parseInt(limit)),
             totalSongs: count
         })
-    }catch(error){
+    } catch (error) {
         console.error("Error in getSongs", error)
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
     }
 }
 
-const getSongById = async(req, res) => {
-    try{
+const getSongById = async (req, res) => {
+    try {
         const id = req.params.id
         const existingSong = await Song.findById(id)
-        .populate("artist", "name image bio")
-        .populate("album", "title coverImage releasedDate")
-        .populate("featuredArtists", "name image")
+            .populate("artist", "name image bio")
+            .populate("album", "title coverImage releasedDate")
+            .populate("featuredArtists", "name image")
 
-        if(!existingSong){
-            return res.status(StatusCodes.NOT_FOUND)
-            // throw new Error("Song not found");
+        if (!existingSong) {
+            res.status(StatusCodes.NOT_FOUND)
+            throw new Error("Song not found");
         }
-        res.status(StatusCodes.OK).json({existingSong})
-    }catch(err){
+        existingSong.plays += 1
+        await existingSong.save()
+        res.status(StatusCodes.OK).json({ existingSong })
+    } catch (err) {
         console.error("Error in getSongsById", error)
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
     }
 }
 
-module.exports = { createSong, getSongs, getSongById}
+const updateSong = async (req, res) => {
+    try {
+        const { title, artistId, albumId, duration, genre, lyrics, isExplicit, featuredArtists } = req.body
+        const song = await Song.findById(req.params.id)
+        if (!song) {
+            res.status(StatusCodes.NOT_FOUND)
+            throw new Error("Song not found")
+        }
+        song.title = title || song.title
+        song.album = albumId || song.album
+        song.genre = genre || song.genre
+        song.lyrics = lyrics || song.lyrics
+        song.artist = artistId || song.artist
+        song.duration = duration || song.duration
+        // song.isExplicit = isExplicit !== undefined ? isExplicit = "true" : song.isExplicit
+        if (isExplicit !== undefined) {
+            song.isExplicit = (isExplicit === 'true' || isExplicit === true);
+        }
+        song.featuredArtists = featuredArtists ? JSON.parse(featuredArtists) : song.featuredArtists
+        if (req.files && req.files.cover) {
+            const imageResult = await uploadToCloudinary(
+                req.files.cover[0].path,
+                "spotify/covers"
+            );
+            song.coverImage = imageResult.secure_url;
+        }
+        if (req.files && req.files.audio) {
+            const audioResult = await uploadToCloudinary(
+                req.files.audio[0].path,
+                "spotify/songs"
+            );
+            song.audioUrl = audioResult.secure_url;
+        }
+
+        const updatedSong = await song.save();
+        res.status(StatusCodes.OK).json(updatedSong);
+    } catch (error) {
+        console.error("Error in updateSong", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createSong, getSongs, getSongById, updateSong}

@@ -222,4 +222,19 @@ const getTopSongs = async (req, res) => {
     }
 }
 
-module.exports = { createSong, getSongs, getSongById, updateSong, deleteSong, getTopSongs }
+const getNewReleases = async(req, res) => {
+    try{
+        const {limit = 10} = req.query
+        const songs = await Song.find()
+            .limit(limit)
+            .sort({createdAt: -1})
+            .populate("artist", "name image")
+            .populate("album", "title coverImage")
+        res.status(StatusCodes.OK).json(songs)
+    }catch(error){
+        console.error("error in getNewReleases", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Something went wrong", error: error.message})
+    }
+}
+
+module.exports = { createSong, getSongs, getSongById, updateSong, deleteSong, getTopSongs, getNewReleases }

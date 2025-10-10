@@ -868,6 +868,110 @@
       }
     },
 
+    "/api/songs/new-releases": {
+      "get": {
+        "tags": [
+          "Songs"
+        ],
+        "summary": "Get new release songs",
+        "description": "Retrieves a list of the most recently added songs, sorted by their creation date in descending order. The number of songs returned can be controlled with the optional 'limit' query parameter.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The maximum number of new songs to return. Defaults to 10.",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of new release songs retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "coverImage": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "artist": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "type": "string",
+                            "format": "uri"
+                          }
+                        }
+                      },
+                      "album": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "coverImage": {
+                            "type": "string",
+                            "format": "uri"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "638f8a9c1e1d1f2e1c1b1c2d",
+                    "title": "Anti-Hero",
+                    "createdAt": "2023-10-21T10:00:00.000Z",
+                    "coverImage": "https://example.com/antihero.jpg",
+                    "artist": {
+                      "_id": "638f8b1d1e1d1f2e1c1c1d3e",
+                      "name": "Taylor Swift",
+                      "image": "https://example.com/taylorswift.jpg"
+                    },
+                    "album": {
+                      "_id": "638f8c4e1e1d1f2e1c1d1e4f",
+                      "title": "Midnights",
+                      "coverImage": "https://example.com/midnights.jpg"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+
     "/api/songs/{id}": {
       "get": {
         "tags": [

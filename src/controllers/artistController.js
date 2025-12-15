@@ -40,4 +40,57 @@ const createArtist = async (req, res) => {
     }
 }
 
-module.exports = { createArtist }
+const getArtists = async(req, res) => {
+    try{
+        const {genre, search, page = 1, limit = 10} = req.query
+        const filter = {}
+        if(genre){
+            filter.genres = {$in: [genre]}
+        }
+        if(search){
+            filter.$or = [
+                {
+                    name: {$regex: search, $options: "i"}
+                },
+                {
+                    bio: {$regex: search, $options: "i"}
+                }
+            ]
+        }
+
+        const count = await Artist.countDocuments(filter)
+        const skip = (parseInt(page) - 1) * parseInt(limit)
+        
+        const artists = await Artist.find(filter)
+            .sort({followers: -1})
+            .limit(parseInt(limit))
+            .skip(skip)
+        
+            res.status(StatusCodes.OK).json({
+                artists,
+                page: parseInt(page),
+                pages: Math.ceil(count / parseInt(limit)),
+                totalArtists: count
+            })
+    }catch(error){
+        console.error("Error in getArtists", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+
+const getArtistById = async(req, res) => {
+    try{
+        const {id} = req.params
+        const artist = await Artist.findById(id)
+        if(artist){
+            res.status(StatusCodes.OK).json(artist)
+        }
+    }catch(error){
+        
+        res.status(StatusCodes.NOT_FOUND)
+        throw new Error("Artist not found")
+    }
+}
+
+module.exports = { createArtist, getArtists, getArtistById}

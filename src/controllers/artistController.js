@@ -93,4 +93,32 @@ const getArtistById = async(req, res) => {
     }
 }
 
-module.exports = { createArtist, getArtists, getArtistById}
+const updateArtist = async(req, res) => {
+    try{
+        const {name, bio, genres, isVerified} = req.body
+        const {id} = req.params
+        const artist = await Artist.findById(id)
+        if(!artist){
+            res.status(StatusCodes.NOT_FOUND);
+            throw new Error("Artist not found");
+        }
+
+        artist.name = name || artist.name
+        artist.bio = bio || artist.bio
+        artist.genres = genres || artist.genres
+        artist.isVerified = isVerified !== undefined ? isVerified === "true" : artist.isVerified
+
+        if(req.file){
+            const result = await uploadToCloudinary(req.file.path, "spotify/artists")
+            artist.image = result.secure_url
+        }
+
+        const updatedArtist = await artist.save()
+        res.status(StatusCodes.OK).json(updatedArtist)
+    }catch(error){
+        console.error("Error in updateArtist", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createArtist, getArtists, getArtistById, updateArtist}

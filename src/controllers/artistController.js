@@ -121,4 +121,23 @@ const updateArtist = async(req, res) => {
     }
 }
 
-module.exports = { createArtist, getArtists, getArtistById, updateArtist}
+const deleteArtist = async(req, res) => {
+    try{
+        const {id} = req.params
+        const artist = await Artist.findById(id)
+        if(!artist){
+            res.status(StatusCodes.NOT_FOUND)
+            throw new Error("Artist not found")
+        }
+        await Song.deleteMany({artist: artist._id})
+        await Album.deleteMany({artist: artist._id})
+        
+        await artist.deleteOne()
+        res.status(StatusCodes.OK).json({message: "Artist Deleted"})
+    }catch(error){
+        console.error("Error in deleteArtist", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createArtist, getArtists, getArtistById, updateArtist, deleteArtist}

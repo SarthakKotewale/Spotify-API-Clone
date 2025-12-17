@@ -140,4 +140,17 @@ const deleteArtist = async(req, res) => {
     }
 }
 
-module.exports = { createArtist, getArtists, getArtistById, updateArtist, deleteArtist}
+const getTopArtists = async(req, res) => {
+    try{
+        const {limit = 10} = req.query
+        const artists = await Artist.find()
+            .sort({followers: -1})
+            .limit(parseInt(limit))
+        res.status(StatusCodes.OK).json(artists)
+    }catch(error){
+        console.error("Error in getTopArtists", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+module.exports = { createArtist, getArtists, getArtistById, updateArtist, deleteArtist, getTopArtists}

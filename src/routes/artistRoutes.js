@@ -1,6 +1,6 @@
 const express = require('express')
 const artistRouter = express.Router()
-const {createArtist, getArtists, getArtistById, updateArtist, deleteArtist} = require('../controllers/artistController')
+const {createArtist, getArtists, getArtistById, updateArtist, deleteArtist, getTopArtists} = require('../controllers/artistController')
 const {protect, isAdmin} = require('../middlewares/auth')
 const upload = require('../middlewares/upload')
 
@@ -9,6 +9,7 @@ artistRouter.put('/:id', protect, isAdmin, upload.single("image"), updateArtist)
 artistRouter.delete('/:id', protect, isAdmin, deleteArtist)
 
 artistRouter.get('/', getArtists)
+artistRouter.get('/top', getTopArtists)
 artistRouter.get('/:id', getArtistById)
 
 module.exports = artistRouter

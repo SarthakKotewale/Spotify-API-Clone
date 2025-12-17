@@ -153,4 +153,25 @@ const getTopArtists = async(req, res) => {
     }
 }
 
-module.exports = { createArtist, getArtists, getArtistById, updateArtist, deleteArtist, getTopArtists}
+
+const getArtistTopSongs = async(req, res) => {
+    try{
+        const {id} = req.params
+        const {limit = 5} = req.query
+        const songs = await Song.find({artist: id})
+            .sort({plays: -1})
+            .limit(limit)
+            .populate("album", "title coverImage")
+        if (!songs.length) {
+            res.status(StatusCodes.NOT_FOUND);
+            throw new Error("No songs found for this artist");
+        }
+        res.status(StatusCodes.OK).json(songs)
+    }catch(error){
+        console.error("Error in getArtistTopSongs", error)
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+    }
+}
+
+
+module.exports = { createArtist, getArtists, getArtistById, updateArtist, deleteArtist, getTopArtists, getArtistTopSongs}

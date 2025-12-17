@@ -1,6 +1,6 @@
 const express = require('express')
 const artistRouter = express.Router()
-const {createArtist, getArtists, getArtistById, updateArtist, deleteArtist, getTopArtists} = require('../controllers/artistController')
+const {createArtist, getArtists, getArtistById, updateArtist, deleteArtist, getTopArtists, getArtistTopSongs} = require('../controllers/artistController')
 const {protect, isAdmin} = require('../middlewares/auth')
 const upload = require('../middlewares/upload')
 
@@ -11,5 +11,5 @@ artistRouter.delete('/:id', protect, isAdmin, deleteArtist)
 artistRouter.get('/', getArtists)
 artistRouter.get('/top', getTopArtists)
 artistRouter.get('/:id', getArtistById)
-
+artistRouter.get("/:id/top-songs", getArtistTopSongs);
 module.exports = artistRouter

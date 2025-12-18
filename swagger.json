@@ -1646,7 +1646,10 @@
                   },
                   "isVerified": {
                     "type": "string",
-                    "enum": ["true", "false"],
+                    "enum": [
+                      "true",
+                      "false"
+                    ],
                     "example": "true",
                     "description": "Verification status of the artist"
                   },
@@ -1679,6 +1682,156 @@
           },
           "404": {
             "description": "Artist not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Artists"
+        ],
+        "summary": "Delete an artist",
+        "description": "Delete an artist by ID. This will also delete all songs and albums associated with the artist. Only admins can perform this action.",
+        "operationId": "deleteArtist",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "64bfc9a2f1a4e5c9a0d12345",
+            "description": "MongoDB ObjectId of the artist"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Artist deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Artist Deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - no token provided"
+          },
+          "403": {
+            "description": "Forbidden - user is not an admin"
+          },
+          "404": {
+            "description": "Artist not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/artists/top": {
+      "get": {
+        "tags": [
+          "Artists"
+        ],
+        "summary": "Get top artists",
+        "description": "Fetch top artists sorted by number of followers in descending order.",
+        "operationId": "getTopArtists",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "example": 10,
+            "description": "Number of top artists to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top artists fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Artist"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/artists/{id}/top-songs": {
+      "get": {
+        "tags": [
+          "Artists"
+        ],
+        "summary": "Get top songs of an artist",
+        "description": "Fetch top songs of a specific artist sorted by number of plays in descending order.",
+        "operationId": "getArtistTopSongs",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "64bfc9a2f1a4e5c9a0d12345",
+            "description": "MongoDB ObjectId of the artist"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "example": 5,
+            "description": "Number of top songs to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top songs fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Song"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No songs found for this artist"
           },
           "500": {
             "description": "Internal server error"

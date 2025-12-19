@@ -5,6 +5,7 @@ const {
   getUserProfile,
   updateUserProfile,
   toggleLikeSong,
+  toggleLikeAlbum,
   toggleFollowArtist,
   toggleFollowPlaylist,
 } = require("../controllers/userController");
@@ -25,8 +26,9 @@ userRouter.put(
   updateUserProfile
 );
 
-userRouter.put("/like-song/:id", protect, toggleLikeSong); //left to test
-userRouter.put("/follow-artist/:id", protect, toggleFollowArtist); //left to test
+userRouter.put("/like-song/:id", protect, toggleLikeSong);
+userRouter.put("/like-album/:id", protect, toggleLikeAlbum);//left to test
+userRouter.put("/follow-artist/:id", protect, toggleFollowArtist);
 
 userRouter.put("/follow-playlist/:id", protect, toggleFollowPlaylist); //left to test
 

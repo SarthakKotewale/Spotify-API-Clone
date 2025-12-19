@@ -143,6 +143,44 @@ const toggleLikeSong = async (req, res) => {
   }
 }
 
+const toggleLikeAlbum = async(req, res) => {
+  try{
+    const albumId = req.params.id
+    const user = await User.findById(req.user._id)
+    if (!user) {
+      res.status(StatusCodes.NOT_FOUND)
+      throw new Error("User not found")
+    }
+    
+    const album = await Album.findById(albumId)
+    if (!album) {
+      res.status(StatusCodes.NOT_FOUND)
+      throw new Error("album not found")
+    }
+    
+    const albumIndex = user.likedAlbums.indexOf(albumId)
+    if (albumIndex === -1) {
+      user.likedAlbums.push(albumId)
+      album.likes += 1
+    } else {
+      user.likedAlbums.splice(albumIndex, 1)
+      if (album.likes > 0) {
+        album.likes -= 1
+      }
+    }
+
+    await Promise.all([user.save(), album.save()])
+
+    res.status(StatusCodes.OK).json({
+      likedAlbums: user.likedAlbums,
+      message: albumIndex === -1 ? "Album added to liked albums" : "Album removed from liked Albums"
+    })
+  }catch(error){
+    console.error("Error in toggleLikeSong", error)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
+  }
+}
+
 const toggleFollowArtist = async (req, res) => {
   try {
     const artistId = req.params.id
@@ -217,4 +255,4 @@ const toggleFollowPlaylist = async (req, res) => {
   }
 }
 
-module.exports = { register, login, getUserProfile, updateUserProfile, toggleLikeSong, toggleFollowArtist, toggleFollowPlaylist };
+module.exports = { register, login, getUserProfile, updateUserProfile, toggleLikeSong, toggleLikeAlbum, toggleFollowArtist, toggleFollowPlaylist };

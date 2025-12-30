@@ -40,20 +40,14 @@
       "post": {
         "summary": "Register a new user",
         "description": "Creates a new user account. The email must be unique.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "email",
-                  "password"
-                ],
+                "required": ["name", "email", "password"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -157,19 +151,14 @@
       "post": {
         "summary": "Authenticate a user",
         "description": "Logs in a user with their email and password, returning a JWT.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -255,9 +244,7 @@
       "get": {
         "summary": "Get the current user's profile",
         "description": "Retrieves the full profile for the authenticated user, including liked songs, followed artists, and playlists. Requires a valid JWT.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "BearerAuth": []
@@ -337,9 +324,7 @@
       "put": {
         "summary": "Update the current user's profile",
         "description": "Updates the authenticated user's name, email, password, or profile picture. All fields are optional. Requires a valid JWT.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "BearerAuth": []
@@ -399,9 +384,7 @@
       "put": {
         "summary": "Like or unlike a song",
         "description": "Toggles the 'liked' status of a specific song for the authenticated user. Requires a valid JWT.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "BearerAuth": []
@@ -437,9 +420,7 @@
                     }
                   },
                   "example": {
-                    "likedSongs": [
-                      "638e2f8f5e1b1b1b1b1c1d1e"
-                    ],
+                    "likedSongs": ["638e2f8f5e1b1b1b1b1c1d1e"],
                     "message": "Song added to liked songs"
                   }
                 }
@@ -455,13 +436,73 @@
         }
       }
     },
+    "/api/users/like-album/{id}": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Like or unlike an album",
+        "description": "Toggle like status for an album. If the album is already liked, it will be removed from liked albums. If not, it will be added.",
+        "operationId": "toggleLikeAlbum",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "64cfc9a2f1a4e5c9a0d98765",
+            "description": "MongoDB ObjectId of the album"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Album like status toggled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "likedAlbums": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "64cfc9a2f1a4e5c9a0d98765",
+                        "64cfc9a2f1a4e5c9a0d11111"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Album added to liked albums"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - user not logged in"
+          },
+          "404": {
+            "description": "User or album not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/users/follow-artist/{id}": {
       "put": {
         "summary": "Follow or unfollow an artist",
         "description": "Toggles the 'followed' status of a specific artist for the authenticated user. Requires a valid JWT.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "BearerAuth": []
@@ -497,9 +538,7 @@
                     }
                   },
                   "example": {
-                    "followedArtists": [
-                      "638e2f8f5e1b1b1b1b1f2g2h"
-                    ],
+                    "followedArtists": ["638e2f8f5e1b1b1b1b1f2g2h"],
                     "message": "Artist followed"
                   }
                 }
@@ -519,9 +558,7 @@
       "put": {
         "summary": "Follow or unfollow a playlist",
         "description": "Toggles the 'followed' status of a specific playlist for the authenticated user. Requires a valid JWT.",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "security": [
           {
             "BearerAuth": []
@@ -557,9 +594,7 @@
                     }
                   },
                   "example": {
-                    "followedPlaylists": [
-                      "638e2f8f5e1b1b1b1b3i4j5k"
-                    ],
+                    "followedPlaylists": ["638e2f8f5e1b1b1b1b3i4j5k"],
                     "message": "Playlist followed"
                   }
                 }
@@ -577,9 +612,7 @@
     },
     "/api/songs": {
       "post": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Create a new song - Admin only",
         "description": "Uploads a new song with audio, optional cover image, and metadata.",
         "operationId": "createSong",
@@ -636,11 +669,7 @@
                     "description": "Cover image (optional)"
                   }
                 },
-                "required": [
-                  "title",
-                  "artistId",
-                  "audio"
-                ]
+                "required": ["title", "artistId", "audio"]
               }
             }
           }
@@ -668,9 +697,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Get all songs",
         "description": "Retrieve a list of songs with optional filtering by genre, artist, search, and pagination.",
         "operationId": "getSongs",
@@ -762,9 +789,7 @@
     },
     "/api/songs/top": {
       "get": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Get top played songs",
         "description": "Retrieves a list of the most played songs, sorted in descending order of play count. The number of songs returned can be controlled with the optional 'limit' query parameter.",
         "parameters": [
@@ -868,9 +893,7 @@
     },
     "/api/songs/new-releases": {
       "get": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Get new release songs",
         "description": "Retrieves a list of the most recently added songs, sorted by their creation date in descending order. The number of songs returned can be controlled with the optional 'limit' query parameter.",
         "parameters": [
@@ -971,9 +994,7 @@
     },
     "/api/songs/{id}": {
       "get": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Get a specific song by its ID",
         "description": "Retrieves detailed information for a single song, including populated data for the main artist, album, and any featured artists.",
         "parameters": [
@@ -1145,9 +1166,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Update a song's details",
         "description": "Updates an existing song by its ID. Can update metadata and/or upload new cover image and audio files. All fields are optional.",
         "security": [
@@ -1332,9 +1351,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Songs"
-        ],
+        "tags": ["Songs"],
         "summary": "Delete a song by ID (Admin only)",
         "description": "Deletes a specific song by its unique ID. This action also removes the song's reference from its associated artist and album. This is a protected route and requires administrator privileges.",
         "security": [
@@ -1404,9 +1421,7 @@
     },
     "/api/artists": {
       "post": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Create a new artist",
         "description": "Only admins can create artists. Upload artist details along with an optional image.",
         "operationId": "createArtist",
@@ -1440,11 +1455,7 @@
                     "description": "Artist image file"
                   }
                 },
-                "required": [
-                  "name",
-                  "bio",
-                  "genres"
-                ]
+                "required": ["name", "bio", "genres"]
               }
             }
           }
@@ -1475,9 +1486,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Get all artists",
         "description": "Fetch a paginated list of artists. Supports filtering by genre and searching by name or bio.",
         "operationId": "getArtists",
@@ -1564,9 +1573,7 @@
     },
     "/api/artists/{id}": {
       "get": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Get artist by ID",
         "description": "Fetch a single artist using their unique artist ID.",
         "operationId": "getArtistById",
@@ -1602,9 +1609,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Update artist details",
         "description": "Update artist information. Only admins can update artist details. Supports optional image upload.",
         "operationId": "updateArtist",
@@ -1646,10 +1651,7 @@
                   },
                   "isVerified": {
                     "type": "string",
-                    "enum": [
-                      "true",
-                      "false"
-                    ],
+                    "enum": ["true", "false"],
                     "example": "true",
                     "description": "Verification status of the artist"
                   },
@@ -1689,9 +1691,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Delete an artist",
         "description": "Delete an artist by ID. This will also delete all songs and albums associated with the artist. Only admins can perform this action.",
         "operationId": "deleteArtist",
@@ -1746,9 +1746,7 @@
     },
     "/api/artists/top": {
       "get": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Get top artists",
         "description": "Fetch top artists sorted by number of followers in descending order.",
         "operationId": "getTopArtists",
@@ -1787,9 +1785,7 @@
     },
     "/api/artists/{id}/top-songs": {
       "get": {
-        "tags": [
-          "Artists"
-        ],
+        "tags": ["Artists"],
         "summary": "Get top songs of an artist",
         "description": "Fetch top songs of a specific artist sorted by number of plays in descending order.",
         "operationId": "getArtistTopSongs",

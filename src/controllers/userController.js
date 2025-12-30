@@ -176,7 +176,7 @@ const toggleLikeAlbum = async(req, res) => {
       message: albumIndex === -1 ? "Album added to liked albums" : "Album removed from liked Albums"
     })
   }catch(error){
-    console.error("Error in toggleLikeSong", error)
+    console.error("Error in toggleLikeAlbum", error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong", error: error.message })
   }
 }

@@ -1,0 +1,13 @@
+module.exports = {
+  PASSWORD_MIN: 6,
+  PASSWORD_MAX: 20,
+
+  TITLE_MIN: 3,
+  TITLE_MAX: 100,
+
+  DESCRIPTION_MIN: 10,
+  DESCRIPTION_MAX: 200,
+
+  NAME_MIN: 2,
+  NAME_MAX: 100,
+};
